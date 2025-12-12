@@ -5,77 +5,82 @@ namespace App\Tests\Unit\Entity;
 use App\Entity\Country;
 use App\Entity\User;
 use Faker\Factory;
+use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 
 class CountryTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function name(): void
+    // Prepare to test
+    private static ?Generator $faker = null;
+
+    private ?Country $entity;
+
+    public static function setUpBeforeClass(): void
     {
-        $faker = Factory::create();
-        $name = $faker->country();
-        $entity = new Country();
-        $this->assertInstanceOf(Country::class, $entity->setName($name));
-        $this->assertEquals($name, $entity->getName());
+        self::$faker = Factory::create();
     }
 
-    /**
-     * @test
-     */
-    public function persons(): void
+    public function setUp(): void
     {
-        $person = new User();
-        $entity = new Country();
-        $this->assertEmpty($entity->getPersons());
-        $this->assertInstanceOf(Country::class, $entity->addPerson($person));
-        $this->assertEquals($person, $entity->getPersons()->first());
-        $this->assertCount(1, $entity->getPersons());
-        $this->assertInstanceOf(Country::class, $entity->removePerson($person));
-        $this->assertEmpty($entity->getPersons());
+        $this->entity = new Country();
     }
 
-    /**
-     * @test
-     */
-    public function setCreatedAtValue(): void
+    public static function tearDownAfterClass(): void
     {
-        $entity = new Country();
-        $entity->setCreatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getCreatedAt());
+        self::$faker = null;
     }
 
-    /**
-     * @test
-     */
-    public function setUpdateAtValue(): void
+    public function tearDown(): void
     {
-        $entity = new Country();
-        $this->assertNull($entity->getUpdatedAt());
-        $entity->setUpdatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getUpdatedAt());
+        $this->entity = null;
     }
 
-    /**
-     * @test
-     */
-    public function createdAt(): void
+    // start tests
+    public function testName(): void
+    {
+        $name = self::$faker->country();
+        $this->assertInstanceOf(Country::class, $this->entity->setName($name));
+        $this->assertEquals($name, $this->entity->getName());
+    }
+
+    public function testPersons(): void
+    {
+        $person = $this->createMock(User::class);
+        $person->expects($this->once())
+            ->method('getCountry')
+            ->willReturn($this->entity);
+        $this->assertEmpty($this->entity->getPersons());
+        $this->assertInstanceOf(Country::class, $this->entity->addPerson($person));
+        $this->assertEquals($person, $this->entity->getPersons()->first());
+        $this->assertCount(1, $this->entity->getPersons());
+        $this->assertInstanceOf(Country::class, $this->entity->removePerson($person));
+        $this->assertEmpty($this->entity->getPersons());
+    }
+
+    public function testSetCreatedAtValue(): void
+    {
+        $this->entity->setCreatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getCreatedAt());
+    }
+
+    public function testSetUpdateAtValue(): void
+    {
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->entity->setUpdatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getUpdatedAt());
+    }
+
+    public function testCreatedAt(): void
     {
         $createdAt = new \DateTimeImmutable();
-        $entity = new Country();
-        $this->assertInstanceOf(Country::class, $entity->setCreatedAt($createdAt));
-        $this->assertEquals($createdAt, $entity->getCreatedAt());
+        $this->assertInstanceOf(Country::class, $this->entity->setCreatedAt($createdAt));
+        $this->assertEquals($createdAt, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function updatedAt(): void
+    public function testUpdatedAt(): void
     {
         $updatedAt = new \DateTimeImmutable();
-        $entity = new Country();
-        $this->assertInstanceOf(Country::class, $entity->setUpdatedAt($updatedAt));
-        $this->assertEquals($updatedAt, $entity->getUpdatedAt());
+        $this->assertInstanceOf(Country::class, $this->entity->setUpdatedAt($updatedAt));
+        $this->assertEquals($updatedAt, $this->entity->getUpdatedAt());
     }
 }

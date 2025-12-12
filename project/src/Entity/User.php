@@ -96,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $impresario = false;
 
     #[ORM\OneToOne(targetEntity: Manager::class, mappedBy: 'user')]
-    private ?Educator $managerDetails = null;
+    private ?Manager $managerDetails = null;
 
     #[ORM\OneToOne(targetEntity: Educator::class, mappedBy: 'user')]
     private ?Educator $educatorDetails = null;
@@ -428,6 +428,106 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEducator(bool $educator): static
     {
         $this->educator = $educator;
+
+        return $this;
+    }
+
+    public function isPossessor(): ?bool
+    {
+        return $this->possessor;
+    }
+
+    public function setPossessor(bool $possessor): static
+    {
+        $this->possessor = $possessor;
+
+        return $this;
+    }
+
+    public function isManager(): ?bool
+    {
+        return $this->manager;
+    }
+
+    public function setManager(bool $manager): static
+    {
+        $this->manager = $manager;
+
+        return $this;
+    }
+
+    public function isImpresario(): ?bool
+    {
+        return $this->impresario;
+    }
+
+    public function setImpresario(bool $impresario): static
+    {
+        $this->impresario = $impresario;
+
+        return $this;
+    }
+
+    public function getManagerDetails(): ?Manager
+    {
+        return $this->managerDetails;
+    }
+
+    public function setManagerDetails(?Manager $managerDetails): static
+    {
+        if (null !== $managerDetails && $managerDetails->getUser() !== $this) {
+            $managerDetails->setUser($this);
+        }
+
+        $this->managerDetails = $managerDetails;
+
+        return $this;
+    }
+
+    public function getEducatorDetails(): ?Educator
+    {
+        return $this->educatorDetails;
+    }
+
+    public function setEducatorDetails(?Educator $educatorDetails): static
+    {
+        if (null !== $educatorDetails && $educatorDetails->getUser() !== $this) {
+            $educatorDetails->setUser($this);
+        }
+
+        $this->educatorDetails = $educatorDetails;
+
+        return $this;
+    }
+
+    public function getSingerDetails(): ?Singer
+    {
+        return $this->singerDetails;
+    }
+
+    public function setSingerDetails(?Singer $singerDetails): static
+    {
+        if (null !== $singerDetails && $singerDetails->getUser() !== $this) {
+            $singerDetails->setUser($this);
+        }
+
+        $this->singerDetails = $singerDetails;
+
+        return $this;
+    }
+
+    public function getPossessorDetails(): ?Possessor
+    {
+        return $this->possessorDetails;
+    }
+
+    public function setPossessorDetails(?Possessor $possessorDetails): static
+    {
+        if (null !== $possessorDetails && $possessorDetails->getUser() !== $this) {
+            $possessorDetails->setUser($this);
+        }
+
+        $this->possessorDetails = $possessorDetails;
 
         return $this;
     }

@@ -3,92 +3,91 @@
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Instrument;
+use App\Entity\InstrumentType;
 use App\Entity\InstrumentType as Entity;
 use Faker\Factory;
+use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 
 class InstrumentTypeTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function name(): void
+    // Prepare to test
+    private static ?Generator $faker = null;
+
+    private ?InstrumentType $entity;
+
+    public static function setUpBeforeClass(): void
     {
-        $faker = Factory::create();
-        $name = $faker->word();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setName($name));
-        $this->assertEquals($name, $entity->getName());
+        self::$faker = Factory::create();
     }
 
-    /**
-     * @test
-     */
-    public function string(): void
+    public function setUp(): void
     {
-        $faker = Factory::create();
-        $name = $faker->word();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setName($name));
-        $this->assertEquals($name, $entity);
+        $this->entity = new InstrumentType();
     }
 
-    /**
-     * @test
-     */
-    public function createdAt(): void
+    public static function tearDownAfterClass(): void
+    {
+        self::$faker = null;
+    }
+
+    public function tearDown(): void
+    {
+        $this->entity = null;
+    }
+
+    // start tests
+    public function testName(): void
+    {
+        $name = self::$faker->word();
+        $this->assertInstanceOf(Entity::class, $this->entity->setName($name));
+        $this->assertEquals($name, $this->entity->getName());
+    }
+
+    public function testToString(): void
+    {
+        $name = self::$faker->word();
+        $this->entity = new Entity();
+        $this->assertInstanceOf(Entity::class, $this->entity->setName($name));
+        $this->assertEquals($name, $this->entity);
+    }
+
+    public function testCreatedAt(): void
     {
         $createdAt = new \DateTimeImmutable();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setCreatedAt($createdAt));
-        $this->assertEquals($createdAt, $entity->getCreatedAt());
+        $this->assertInstanceOf(Entity::class, $this->entity->setCreatedAt($createdAt));
+        $this->assertEquals($createdAt, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function updatedAt(): void
+    public function testUpdatedAt(): void
     {
         $updatedAt = new \DateTimeImmutable();
-        $entity = new Entity();
-        $this->assertNull($entity->getUpdatedAt());
-        $this->assertInstanceOf(Entity::class, $entity->setUpdatedAt($updatedAt));
-        $this->assertEquals($updatedAt, $entity->getUpdatedAt());
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->assertInstanceOf(Entity::class, $this->entity->setUpdatedAt($updatedAt));
+        $this->assertEquals($updatedAt, $this->entity->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function setCreatedAt(): void
+    public function testSetCreatedAt(): void
     {
-        $entity = new Entity();
-        $entity->setCreatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getCreatedAt());
+        $this->entity->setCreatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function setUpdatedAtValue(): void
+    public function testSetUpdatedAtValue(): void
     {
-        $entity = new Entity();
-        $this->assertNull($entity->getUpdatedAt());
-        $entity->setUpdatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getUpdatedAt());
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->entity->setUpdatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function instruments(): void
+    public function testInstruments(): void
     {
-        $instrument = new Instrument();
-        $entity = new Entity();
-        $this->assertEmpty($entity->getInstruments());
-        $this->assertInstanceOf(Entity::class, $entity->addInstrument($instrument));
-        $this->assertCount(1, $entity->getInstruments());
-        $this->assertEquals($instrument, $entity->getInstruments()->first());
-        $this->assertInstanceOf(Entity::class, $entity->removeInstrument($instrument));
-        $this->assertEmpty($entity->getInstruments());
+        $instrument = $this->createMock(Instrument::class);
+        $this->assertEmpty($this->entity->getInstruments());
+        $this->assertInstanceOf(Entity::class, $this->entity->addInstrument($instrument));
+        $this->assertCount(1, $this->entity->getInstruments());
+        $this->assertEquals($instrument, $this->entity->getInstruments()->first());
+        $this->assertInstanceOf(Entity::class, $this->entity->removeInstrument($instrument));
+        $this->assertEmpty($this->entity->getInstruments());
     }
 }

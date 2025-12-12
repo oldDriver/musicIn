@@ -3,320 +3,322 @@
 namespace Tests\Unit\Entity;
 
 use App\Entity\Country;
+use App\Entity\Educator;
+use App\Entity\Genre;
 use App\Entity\Instrument;
+use App\Entity\Manager;
+use App\Entity\Possessor;
+use App\Entity\Singer;
 use App\Entity\User;
 use Faker\Factory;
+use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 
 class UserTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function email(): void
+    // Prepare to test
+    private static ?Generator $faker = null;
+
+    private ?User $entity;
+
+    public static function setUpBeforeClass(): void
     {
-        $faker = Factory::create();
-        $email = $faker->email();
-        $entity = new User();
-        $this->assertInstanceOf(User::class, $entity->setEmail($email));
-        $this->assertEquals($email, $entity->getEmail());
+        self::$faker = Factory::create();
     }
 
-    /**
-     * @test
-     */
-    public function roles(): void
+    public function setUp(): void
     {
-        $faker = Factory::create();
-        $role = $faker->word();
-        $entity = new User();
-        $this->assertEquals(['ROLE_USER'], $entity->getRoles());
-        $entity->setRoles([$role]);
-        $this->assertEquals([$role, 'ROLE_USER'], $entity->getRoles());
+        $this->entity = new User();
     }
 
-    /**
-     * @test
-     */
-    public function instrument(): void
+    public static function tearDownAfterClass(): void
+    {
+        self::$faker = null;
+    }
+
+    public function tearDown(): void
+    {
+        $this->entity = null;
+    }
+
+    // start tests
+    public function testEmail(): void
+    {
+        $email = self::$faker->email();
+        $this->assertInstanceOf(User::class, $this->entity->setEmail($email));
+        $this->assertEquals($email, $this->entity->getEmail());
+    }
+
+    public function testRoles(): void
+    {
+        $role = self::$faker->word();
+        $this->assertEquals(['ROLE_USER'], $this->entity->getRoles());
+        $this->assertInstanceOf(User::class, $this->entity->setRoles([$role]));
+        $this->assertEquals([$role, 'ROLE_USER'], $this->entity->getRoles());
+    }
+
+    public function testInstrument(): void
     {
         $instrument = $this->createMock(Instrument::class);
-        $entity = new User();
-        $this->assertNull($entity->getInstrument());
-        $this->assertInstanceOf(User::class, $entity->setInstrument($instrument));
-        $this->assertEquals($instrument, $entity->getInstrument());
-        $this->assertInstanceOf(User::class, $entity->setInstrument(null));
-        $this->assertNull($entity->getInstrument());
+        $this->assertNull($this->entity->getInstrument());
+        $this->assertInstanceOf(User::class, $this->entity->setInstrument($instrument));
+        $this->assertEquals($instrument, $this->entity->getInstrument());
+        $this->assertInstanceOf(User::class, $this->entity->setInstrument(null));
+        $this->assertNull($this->entity->getInstrument());
     }
 
-    /**
-     * @test
-     */
-    public function country(): void
+    public function testCountry(): void
     {
-        $country = new Country();
-        $entity = new User();
-        $this->assertNull($entity->getCountry());
-        $this->assertInstanceOf(User::class, $entity->setCountry($country));
-        $this->assertEquals($country, $entity->getCountry());
-        $this->assertInstanceOf(User::class, $entity->setCountry(null));
-        $this->assertNull($entity->getCountry());
+        $country = $this->createMock(Country::class);
+        $this->assertNull($this->entity->getCountry());
+        $this->assertInstanceOf(User::class, $this->entity->setCountry($country));
+        $this->assertEquals($country, $this->entity->getCountry());
+        $this->assertInstanceOf(User::class, $this->entity->setCountry(null));
+        $this->assertNull($this->entity->getCountry());
     }
 
-    /**
-     * @test
-     */
-    public function password(): void
+    public function testPassword(): void
     {
-        $faker = Factory::create();
-        $password = $faker->password();
-        $entity = new User();
-        $this->assertNull($entity->getPassword());
-        $this->assertInstanceOf(User::class, $entity->setPassword($password));
-        $this->assertEquals($password, $entity->getPassword());
-        $this->assertInstanceOf(User::class, $entity->resetPassword());
-        $this->assertNull($entity->getPassword());
+        $password = self::$faker->password();
+        $this->assertNull($this->entity->getPassword());
+        $this->assertInstanceOf(User::class, $this->entity->setPassword($password));
+        $this->assertEquals($password, $this->entity->getPassword());
+        $this->assertInstanceOf(User::class, $this->entity->resetPassword());
+        $this->assertNull($this->entity->getPassword());
     }
 
-    /**
-     * @test
-     */
-    public function firstName(): void
+    public function testFirstName(): void
     {
-        $faker = Factory::create();
-        $firstName = $faker->firstName();
-        $entity = new User();
-        $this->assertInstanceOf(User::class, $entity->setFirstName($firstName));
-        $this->assertEquals($firstName, $entity->getFirstName());
+        $firstName = self::$faker->firstName();
+        $this->assertInstanceOf(User::class, $this->entity->setFirstName($firstName));
+        $this->assertEquals($firstName, $this->entity->getFirstName());
     }
 
-    /**
-     * @test
-     */
-    public function middleName(): void
+    public function testMiddleName(): void
     {
-        $faker = Factory::create();
-        $middleName = $faker->name();
-        $entity = new User();
-        $this->assertNull($entity->getMiddleName());
-        $this->assertInstanceOf(User::class, $entity->setMiddleName($middleName));
-        $this->assertEquals($middleName, $entity->getMiddleName());
-        $this->assertInstanceOf(User::class, $entity->setMiddleName(null));
-        $this->assertNull($entity->getMiddleName());
+        $middleName = self::$faker->name();
+        $this->assertNull($this->entity->getMiddleName());
+        $this->assertInstanceOf(User::class, $this->entity->setMiddleName($middleName));
+        $this->assertEquals($middleName, $this->entity->getMiddleName());
+        $this->assertInstanceOf(User::class, $this->entity->setMiddleName(null));
+        $this->assertNull($this->entity->getMiddleName());
     }
 
-    /**
-     * @test
-     */
-    public function lastName(): void
+    public function testLastName(): void
     {
-        $faker = Factory::create();
-        $lastName = $faker->lastName();
-        $entity = new User();
-        $this->assertNull($entity->getLastName());
-        $this->assertInstanceOf(User::class, $entity->setLastName($lastName));
-        $this->assertEquals($lastName, $entity->getLastName());
-        $this->assertInstanceOf(User::class, $entity->setLastName(null));
-        $this->assertNull($entity->getLastName());
+        $lastName = self::$faker->lastName();
+        $this->assertNull($this->entity->getLastName());
+        $this->assertInstanceOf(User::class, $this->entity->setLastName($lastName));
+        $this->assertEquals($lastName, $this->entity->getLastName());
+        $this->assertInstanceOf(User::class, $this->entity->setLastName(null));
+        $this->assertNull($this->entity->getLastName());
     }
 
-    /**
-     * @test
-     */
-    public function isSinger(): void
+    public function testSinger(): void
     {
-        $isSinger = true;
-        $entity = new User();
-        $this->assertFalse($entity->isSinger());
-        $this->assertInstanceOf(User::class, $entity->setSinger($isSinger));
-        $this->assertTrue($entity->isSinger());
+        $singer = true;
+        $this->assertFalse($this->entity->isSinger());
+        $this->assertInstanceOf(User::class, $this->entity->setSinger($singer));
+        $this->assertTrue($this->entity->isSinger());
     }
 
-    /**
-     * @test
-     */
-    public function isComposer(): void
+    public function testComposer(): void
     {
-        $isComposer = true;
-        $entity = new User();
-        $this->assertFalse($entity->isComposer());
-        $this->assertInstanceOf(User::class, $entity->setComposer($isComposer));
-        $this->assertTrue($entity->isComposer());
+        $composer = true;
+        $this->assertFalse($this->entity->isComposer());
+        $this->assertInstanceOf(User::class, $this->entity->setComposer($composer));
+        $this->assertTrue($this->entity->isComposer());
     }
 
-    /**
-     * @test
-     */
-    public function isSongwriter(): void
+    public function testSongwriter(): void
     {
-        $isSongwriter = true;
-        $entity = new User();
-        $this->assertFalse($entity->isSongwriter());
-        $this->assertInstanceOf(User::class, $entity->setSongwriter($isSongwriter));
-        $this->assertTrue($entity->isSongwriter());
+        $songwriter = true;
+        $this->assertFalse($this->entity->isSongwriter());
+        $this->assertInstanceOf(User::class, $this->entity->setSongwriter($songwriter));
+        $this->assertTrue($this->entity->isSongwriter());
     }
 
-    /**
-     * @test
-     */
-    public function isArranger(): void
+    public function testArranger(): void
     {
-        $isArranger = true;
-        $entity = new User();
-        $this->assertFalse($entity->isArranger());
-        $this->assertInstanceOf(User::class, $entity->setArranger($isArranger));
-        $this->assertTrue($entity->isArranger());
+        $arranger = true;
+        $this->assertFalse($this->entity->isArranger());
+        $this->assertInstanceOf(User::class, $this->entity->setArranger($arranger));
+        $this->assertTrue($this->entity->isArranger());
     }
 
-    /**
-     * @test
-     */
-    public function isEducator(): void
+    public function testEducator(): void
     {
-        $isEducator = true;
-        $entity = new User();
-        $this->assertFalse($entity->isEducator());
-        $this->assertInstanceOf(User::class, $entity->setEducator($isEducator));
-        $this->assertTrue($entity->isEducator());
+        $educator = true;
+        $this->assertFalse($this->entity->isEducator());
+        $this->assertInstanceOf(User::class, $this->entity->setEducator($educator));
+        $this->assertTrue($this->entity->isEducator());
     }
 
-    /**
-     * @test
-     */
-    public function validate(): void
+    public function testValidate(): void
     {
-        $faker = Factory::create();
-        $email = $faker->email();
-        $firstName = $faker->firstName();
+        $email = self::$faker->email();
+        $firstName = self::$faker->firstName();
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
-        $entity = new User();
-        $errors = $validator->validate($entity);
+        $this->entity = new User();
+        $errors = $validator->validate($this->entity);
         $this->assertCount(2, $errors);
-        $entity->setFirstName($firstName);
-        $errors = $validator->validate($entity);
+        $this->entity->setFirstName($firstName);
+        $errors = $validator->validate($this->entity);
         $this->assertCount(1, $errors);
-        $entity->setEmail('dummy');
-        $errors = $validator->validate($entity);
+        $this->entity->setEmail('dummy');
+        $errors = $validator->validate($this->entity);
         $this->assertCount(1, $errors);
-        $entity->setEmail($email);
-        $errors = $validator->validate($entity);
+        $this->entity->setEmail($email);
+        $errors = $validator->validate($this->entity);
         $this->assertEmpty($errors);
     }
 
-    /**
-     * @test
-     */
-    public function setCreateAtValue(): void
+    public function testSetCreateAtValue(): void
     {
-        $entity = new User();
-        $entity->setCreatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getCreatedAt());
+        $this->entity->setCreatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function setUpdatedAtValue(): void
+    public function testSetUpdatedAtValue(): void
     {
-        $entity = new User();
-        $this->assertNull($entity->getUpdatedAt());
-        $entity->setUpdatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getUpdatedAt());
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->entity->setUpdatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function getUserIdentifier(): void
+    public function testGetUserIdentifier(): void
     {
-        $faker = Factory::create();
-        $email = $faker->email();
-        $entity = new User();
-        $this->assertInstanceOf(User::class, $entity->setEmail($email));
-        $this->assertEquals($email, $entity->getUserIdentifier());
+        $email = self::$faker->email();
+        $this->entity = new User();
+        $this->assertInstanceOf(User::class, $this->entity->setEmail($email));
+        $this->assertEquals($email, $this->entity->getUserIdentifier());
     }
 
-    /**
-     * @test
-     */
-    public function eraseCredentials(): void
+    public function testEraseCredentials(): void
     {
-        $entity = new User();
-        $entity->eraseCredentials();
-        $this->assertInstanceOf(User::class, $entity);
+        $this->entity->eraseCredentials();
+        $this->assertInstanceOf(User::class, $this->entity);
     }
 
-    /**
-     * @test
-     */
-    public function createdAt(): void
+    public function testCreatedAt(): void
     {
-        $faker = Factory::create();
         $createdAt = new \DateTimeImmutable();
-        $entity = new User();
-        $this->assertInstanceOf(User::class, $entity->setCreatedAt($createdAt));
-        $this->assertEquals($createdAt, $entity->getCreatedAt());
+        $this->entity = new User();
+        $this->assertInstanceOf(User::class, $this->entity->setCreatedAt($createdAt));
+        $this->assertEquals($createdAt, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function updatedAt(): void
+    public function testUpdatedAt(): void
     {
-        $faker = Factory::create();
         $updatedAt = new \DateTimeImmutable();
-        $entity = new User();
-        $this->assertInstanceOf(User::class, $entity->setUpdatedAt($updatedAt));
-        $this->assertEquals($updatedAt, $entity->getUpdatedAt());
+        $this->entity = new User();
+        $this->assertInstanceOf(User::class, $this->entity->setUpdatedAt($updatedAt));
+        $this->assertEquals($updatedAt, $this->entity->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function instruments(): void
+    public function testInstruments(): void
     {
-        $instrument = new Instrument();
-        $entity = new User();
-        $this->assertEmpty($entity->getInstruments());
-        $this->assertInstanceOf(User::class, $entity->addInstrument($instrument));
-        $this->assertCount(1, $entity->getInstruments());
-        $this->assertEquals($instrument, $entity->getInstruments()->first());
-        $this->assertInstanceOf(User::class, $entity->removeInstrument($instrument));
-        $this->assertEmpty($entity->getInstruments());
+        $instrument = $this->createMock(Instrument::class);
+        $this->assertEmpty($this->entity->getInstruments());
+        $this->assertInstanceOf(User::class, $this->entity->addInstrument($instrument));
+        $this->assertCount(1, $this->entity->getInstruments());
+        $this->assertEquals($instrument, $this->entity->getInstruments()->first());
+        $this->assertInstanceOf(User::class, $this->entity->removeInstrument($instrument));
+        $this->assertEmpty($this->entity->getInstruments());
     }
 
     /**
-     * @test
-     *
      * @dataProvider hasFeaturesCases
      */
-    public function hasFeatures(bool $isSinger, bool $isSongwriter, bool $isComposer, bool $isArranger, bool $expected): void
+    public function testHasFeatures(bool $singer, bool $songwriter, bool $composer, bool $arranger, bool $expected): void
     {
-        $entity = new User();
-        $entity->setSinger($isSinger);
-        $entity->setSongwriter($isSongwriter);
-        $entity->setComposer($isComposer);
-        $entity->setArranger($isArranger);
-        $this->assertEquals($expected, $entity->hasFeatures());
+        $this->entity->setSinger($singer);
+        $this->entity->setSongwriter($songwriter);
+        $this->entity->setComposer($composer);
+        $this->entity->setArranger($arranger);
+        $this->assertEquals($expected, $this->entity->hasFeatures());
     }
 
     public function hasFeaturesCases(): \Generator
     {
         yield [
-            'isSinger' => false,
-            'isSongwriter' => false,
-            'isComposer' => false,
-            'isArranger' => false,
+            'singer' => false,
+            'songwriter' => false,
+            'composer' => false,
+            'arranger' => false,
             'expected' => false,
         ];
 
         yield [
-            'isSinger' => true,
-            'isSongwriter' => false,
-            'isComposer' => false,
-            'isArranger' => false,
+            'singer' => true,
+            'songwriter' => false,
+            'composer' => false,
+            'arranger' => false,
             'expected' => true,
         ];
+    }
+
+    public function testPossessor(): void
+    {
+        $this->assertFalse($this->entity->isPossessor());
+        $this->assertInstanceOf(User::class, $this->entity->setPossessor(true));
+        $this->assertTrue($this->entity->isPossessor());
+    }
+
+    public function testManager(): void
+    {
+        $this->assertFalse($this->entity->isManager());
+        $this->assertInstanceOf(User::class, $this->entity->setManager(true));
+        $this->assertTrue($this->entity->isManager());
+    }
+
+    public function testImpressario(): void
+    {
+        $this->assertFalse($this->entity->isImpresario());
+        $this->assertInstanceOf(User::class, $this->entity->setImpresario(true));
+        $this->assertTrue($this->entity->isImpresario());
+    }
+
+    public function testManagerDetails(): void
+    {
+        $details = $this->createMock(Manager::class);
+        $this->assertNull($this->entity->getManagerDetails());
+        $this->assertInstanceOf(User::class, $this->entity->setManagerDetails($details));
+        $this->assertEquals($details, $this->entity->getManagerDetails());
+    }
+
+    public function testEducatorDetails(): void
+    {
+        $details = $this->createMock(Educator::class);
+        $this->assertNull($this->entity->getEducatorDetails());
+        $this->assertInstanceOf(User::class, $this->entity->setEducatorDetails($details));
+        $this->assertEquals($details, $this->entity->getEducatorDetails());
+    }
+
+    public function testSingerDetails(): void
+    {
+        $details = $this->createMock(Singer::class);
+        $this->assertNull($this->entity->getSingerDetails());
+        $this->assertInstanceOf(User::class, $this->entity->setSingerDetails($details));
+        $this->assertEquals($details, $this->entity->getSingerDetails());
+    }
+
+    public function testPossessorDetails(): void
+    {
+        $details = $this->createMock(Possessor::class);
+        $this->assertNull($this->entity->getPossessorDetails());
+        $this->assertInstanceOf(User::class, $this->entity->setPossessorDetails($details));
+        $this->assertEquals($details, $this->entity->getPossessorDetails());
+    }
+
+    public function testGenre(): void
+    {
+        $genre = $this->createMock(Genre::class);
+        $this->assertEmpty($this->entity->getGenres());
+        $this->assertInstanceOf(User::class, $this->entity->addGenre($genre));
+        $this->assertEquals($genre, $this->entity->getGenres()->last());
+        $this->assertInstanceOf(User::class, $this->entity->removeGenre($genre));
+        $this->assertEmpty($this->entity->getGenres());
     }
 }

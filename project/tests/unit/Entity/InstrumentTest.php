@@ -2,109 +2,107 @@
 
 namespace App\Tests\Unit\Entity;
 
+use App\Entity\Instrument;
 use App\Entity\Instrument as Entity;
 use App\Entity\InstrumentType;
 use App\Entity\User;
 use Faker\Factory;
+use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 
 class InstrumentTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function name(): void
+    // Prepare to test
+    private static ?Generator $faker = null;
+
+    private ?Instrument $entity;
+
+    public static function setUpBeforeClass(): void
     {
-        $faker = Factory::create();
-        $name = $faker->word();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setName($name));
-        $this->assertEquals($name, $entity->getName());
-        $this->assertEquals($name, $entity);
+        self::$faker = Factory::create();
     }
 
-    /**
-     * @test
-     */
-    public function type(): void
+    public function setUp(): void
     {
-        $type = new InstrumentType();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setType($type));
-        $this->assertEquals($type, $entity->getType());
+        $this->entity = new Instrument();
     }
 
-    /**
-     * @test
-     */
-    public function musicians(): void
+    public static function tearDownAfterClass(): void
     {
-        $musician = new User();
-        $entity = new Entity();
-        $this->assertEmpty($entity->getMusicians());
-        $this->assertInstanceOf(Entity::class, $entity->addMusician($musician));
-        $this->assertCount(1, $entity->getMusicians());
-        $this->assertEquals($musician, $entity->getMusicians()->first());
-        $this->assertInstanceOf(Entity::class, $entity->removeMusician($musician));
-        $this->assertEmpty($entity->getMusicians());
+        self::$faker = null;
     }
 
-    /**
-     * @test
-     */
-    public function performers(): void
+    public function tearDown(): void
     {
-        $performer = new User();
-        $entity = new Entity();
-        $this->assertEmpty($entity->getPerformers());
-        $this->assertInstanceOf(Entity::class, $entity->addPerformer($performer));
-        $this->assertCount(1, $entity->getPerformers());
-        $this->assertEquals($performer, $entity->getPerformers()->first());
-        $this->assertInstanceOf(Entity::class, $entity->removePerformer($performer));
-        $this->assertEmpty($entity->getPerformers());
+        $this->entity = null;
     }
 
-    /**
-     * @test
-     */
-    public function createdAt(): void
+    // start tests
+    public function testName(): void
+    {
+        $name = self::$faker->word();
+        $this->assertInstanceOf(Entity::class, $this->entity->setName($name));
+        $this->assertEquals($name, $this->entity->getName());
+        $this->assertEquals($name, $this->entity);
+    }
+
+    public function testType(): void
+    {
+        $type = $this->createMock(InstrumentType::class);
+        $this->assertInstanceOf(Entity::class, $this->entity->setType($type));
+        $this->assertEquals($type, $this->entity->getType());
+    }
+
+    public function testMusicians(): void
+    {
+        $musician = $this->createMock(User::class);
+        $musician->expects($this->once())
+            ->method('getInstrument')
+            ->willReturn($this->entity);
+        $this->assertEmpty($this->entity->getMusicians());
+        $this->assertInstanceOf(Entity::class, $this->entity->addMusician($musician));
+        $this->assertCount(1, $this->entity->getMusicians());
+        $this->assertEquals($musician, $this->entity->getMusicians()->first());
+        $this->assertInstanceOf(Entity::class, $this->entity->removeMusician($musician));
+        $this->assertEmpty($this->entity->getMusicians());
+    }
+
+    public function testPerformers(): void
+    {
+        $performer = $this->createMock(User::class);
+        $this->assertEmpty($this->entity->getPerformers());
+        $this->assertInstanceOf(Entity::class, $this->entity->addPerformer($performer));
+        $this->assertCount(1, $this->entity->getPerformers());
+        $this->assertEquals($performer, $this->entity->getPerformers()->first());
+        $this->assertInstanceOf(Entity::class, $this->entity->removePerformer($performer));
+        $this->assertEmpty($this->entity->getPerformers());
+    }
+
+    public function testCreatedAt(): void
     {
         $createdAt = new \DateTimeImmutable();
-        $entity = new Entity();
-        $this->assertInstanceOf(Entity::class, $entity->setCreatedAt($createdAt));
-        $this->assertEquals($createdAt, $entity->getCreatedAt());
+        $this->assertInstanceOf(Entity::class, $this->entity->setCreatedAt($createdAt));
+        $this->assertEquals($createdAt, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function updatedAt(): void
+    public function testUpdatedAt(): void
     {
         $updatedAt = new \DateTimeImmutable();
-        $entity = new Entity();
-        $this->assertNull($entity->getUpdatedAt());
-        $this->assertInstanceOf(Entity::class, $entity->setUpdatedAt($updatedAt));
-        $this->assertEquals($updatedAt, $entity->getUpdatedAt());
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->assertInstanceOf(Entity::class, $this->entity->setUpdatedAt($updatedAt));
+        $this->assertEquals($updatedAt, $this->entity->getUpdatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function setCreatedAtValue(): void
+    public function testSetCreatedAtValue(): void
     {
-        $entity = new Entity();
-        $entity->setCreatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getCreatedAt());
+        $this->entity->setCreatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getCreatedAt());
     }
 
-    /**
-     * @test
-     */
-    public function setUpdatedAtValue(): void
+    public function testSetUpdatedAtValue(): void
     {
-        $entity = new Entity();
-        $this->assertNull($entity->getUpdatedAt());
-        $entity->setUpdatedAtValue();
-        $this->assertInstanceOf(\DateTimeInterface::class, $entity->getUpdatedAt());
+        $this->assertNull($this->entity->getUpdatedAt());
+        $this->entity->setUpdatedAtValue();
+        $this->assertInstanceOf(\DateTimeInterface::class, $this->entity->getUpdatedAt());
     }
 }
