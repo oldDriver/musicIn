@@ -1,0 +1,31 @@
+user:
+  first_name: First name
+  middle_name: Middle name
+  last_name: Last name
+  instrument: Main instrument
+  instruments: Other instruments
+  email: Email
+
+  edit:
+    name: Edit name
+    features: Edit features
+    instruments: Edit instruments
+    genres: Edit genres
+
+  feature:
+    singer: Is singer
+    songwriter: Is songwriter
+    composer: Is composer
+    arranger: Is arranger
+    conductor: Is conductor
+
+page:
+  homepage: Homepage
+  profile: Profile
+
+answer:
+  yes: Yes
+  no: No
+
+action:
+  save: Save

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicin-backend
+  namespace: musicin
+  labels:
+    app: musicin-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: musicin-web
+  template:
+    metadata:
+      labels:
+        app: musicin-web
+    spec:
+      containers:
+        - name: musicin-web
+          image: olddriverua/musicin:php-info
+          imagePullPolicy: Always
+

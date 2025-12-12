@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table">
+        <tbody>
+        <tr>
+            <th colspan="2">
+                <a href="{{ path('user_edit_name') }}">{{ 'user.edit.name' | trans }}</a>
+            </th>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.first_name' | trans() }}:</th>
+            <td>{{ user.firstName }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.middle_name' | trans() }}:</th>
+            <td>{{ user.middleName }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.last_name' | trans() }}:</th>
+            <td>{{ user.lastName }}</td>
+        </tr>
+        <tr>
+            <th colspan="2">
+                <a href="{{ path('user_edit_features') }}">{{ 'user.edit.features' | trans }}</a>
+            </th>
+        </tr>
+        {% if user.hasFeatures %}
+        <tr>
+            <th scope="row">{{ 'user.feature.singer' | trans() }}:</th>
+            <td>{% if user.isSinger %}{{ 'answer.yes' | trans() }}{% else %}{{ 'answer.no' | trans() }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.feature.songwriter' | trans() }}:</th>
+            <td>{% if user.isSongwriter %}{{ 'answer.yes' | trans() }}{% else %}{{ 'answer.no' | trans() }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.feature.composer' | trans() }}:</th>
+            <td>{%  if user.isComposer %}{{ 'answer.yes' | trans() }}{% else %}{{ 'answer.no' | trans() }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.feature.arranger' | trans() }}:</th>
+            <td>{%  if user.isArranger %}{{ 'answer.yes' | trans() }}{% else %}{{ 'answer.no' | trans() }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th scope="row">{{ 'user.feature.conductor' | trans() }}:</th>
+            <td>{%  if user.isConductor %}{{ 'answer.yes' | trans() }}{% else %}{{ 'answer.no' | trans() }}{% endif %}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th colspan="2">
+                <a href="{{ path('user_edit_instruments') }}">{{ 'user.edit.instruments' | trans }}</a>
+            </th>
+        </tr>
+        <tr>
+            <th colspan="2">
+                <a href="{{ path('user_edit_genres') }}">{{ 'user.edit.genres' | trans }}</a>
+            </th>
+        </tr>
+        {% if user.genres | length > 0 %}
+        <tr>
+            <td colspan="2">
+                {% for item in user.genres %}
+                    {{ item }}&nbsp;
+                {% endfor %}
+
+            </td>
+        </tr>
+        {% endif %}
+
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  # Mysql database container
+  db:
+    build:
+      context: docker/db
+    container_name: database
+    restart: always
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: musicin
+    ports:
+      - "3306:3306"
+    networks:
+      - musicin
+
+  # Symfony apache project container
+  www:
+    build: docker/php
+    container_name: backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/apache:/etc/apache2/sites-enabled
+      - ./project:/var/www
+    restart: always
+    networks:
+      - musicin
+
+networks:
+  musicin:
+
+volumes:
+  database:
