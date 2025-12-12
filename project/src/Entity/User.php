@@ -86,6 +86,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'is_educator')]
     private bool $educator = false;
 
+    #[ORM\Column(name: 'is_possessor')]
+    private bool $possessor = false;
+
+    #[ORM\Column(name: 'is_manager')]
+    private bool $manager = false;
+
+    #[ORM\Column(name: 'is_impresario')]
+    private bool $impresario = false;
+
+    #[ORM\OneToOne(targetEntity: Manager::class, mappedBy: 'user')]
+    private ?Educator $managerDetails = null;
+
+    #[ORM\OneToOne(targetEntity: Educator::class, mappedBy: 'user')]
+    private ?Educator $educatorDetails = null;
+
+    #[ORM\OneToOne(targetEntity: Singer::class, mappedBy: 'user')]
+    private ?Singer $singerDetails = null;
+
+    #[ORM\OneToOne(targetEntity: Possessor::class, mappedBy: 'user')]
+    private ?Possessor $possessorDetails = null;
+
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
 

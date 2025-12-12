@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functiona\Entity;
+namespace Tests\Functiona\Entity;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -12,13 +12,10 @@ class UserTest extends KernelTestCase
 {
     private ?EntityManager $entityManager;
 
-    private UserRepository $repository;
-
     public function setUp(): void
     {
         $kernel = self::bootKernel();
         $this->entityManager = $kernel->getContainer()->get('doctrine.orm.default_entity_manager');
-        $this->repository = $this->entityManager->getRepository(User::class);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Unit\Entity;
+namespace Tests\Unit\Entity;
 
 use App\Entity\Country;
 use App\Entity\Instrument;

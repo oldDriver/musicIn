@@ -3,18 +3,21 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\SingerRepository')]
+#[ORM\Entity(repositoryClass: 'App\Repository\EducatorRepository')]
 #[ORM\HasLifecycleCallbacks]
-class Singer
+class Educator
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'singerDetails')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'educatorDetails')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private User $user;
+
+    #[ORM\Column(type: 'text')]
+    private ?string $description = null;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;

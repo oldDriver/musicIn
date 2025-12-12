@@ -9,6 +9,7 @@ rm -rf project/var/cache
 
 echo "Kill docker containers"
 docker container kill $(docker ps -q)
+docker-compose up -d --remove-orphans
 docker system prune -f
 docker-compose up -d --build
 
